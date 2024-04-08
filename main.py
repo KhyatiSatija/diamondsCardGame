@@ -6,10 +6,13 @@ import sys
 pygame.init()
 
 # Set up the Pygame window
-screen_width = 800  # Set your desired screen width
-screen_height = 600  # Set your desired screen height
+screen_width = 1400  # Set your desired screen width
+screen_height = 750  # Set your desired screen height
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Game of Diamonds")  # Set the window title
+
+# Define font
+font = pygame.font.SysFont(None, 30) 
 
 card_image_paths = {
     '2 of Diamonds': 'PNG-cards-1.3/2_of_diamonds.png',
@@ -100,16 +103,13 @@ diamond_cards = [Card(rank, 'Diamonds') for rank in diamond_ranks]
 random.shuffle(diamond_cards)
 
 # Distribute cards to each player's hand
-num_initial_cards = 5  # Number of cards each player starts with
+num_initial_cards = 15  # Number of cards each player starts with
 for _ in range(num_initial_cards):
     user.hand.append(deck.pop())
     computer.hand.append(deck.pop())
 
 def display_diamond_cards(diamond_cards):
     for card in diamond_cards:
-        # Render and display the card on the screen using Pygame's drawing functions
-        # You can use text or images to represent the cards
-        # For example:
         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
         card_rect = card_image.get_rect()
         card_rect.center = (screen_width // 2, screen_height // 2)  # Center the card on the screen
@@ -168,52 +168,75 @@ def display_game_state(screen, user, computer, diamond_cards):
     # Clear the screen
     screen.fill((0, 0, 0))
 
-    # Display player scores
-    font = pygame.font.SysFont(None, 30)
-    user_score_text = font.render(f"User Score: {user.score}", True, (255, 255, 255))
-    computer_score_text = font.render(f"Computer Score: {computer.score}", True, (255, 255, 255))
-    screen.blit(user_score_text, (20, 20))
-    screen.blit(computer_score_text, (20, 50))
-
-    # Display diamond cards auctioned
-    diamond_card_text = font.render("Diamond Cards Auctioned:", True, (255, 255, 255))
-    screen.blit(diamond_card_text, (20, 100))
-    y_offset = 130
-    for card in diamond_cards:
+    # Display diamond card at the top center of the screen
+    diamond_card_text = font.render("Diamond Card:", True, (255, 255, 255))
+    screen.blit(diamond_card_text, (screen_width // 2 - diamond_card_text.get_width() // 2, 20))
+    if diamond_cards:
+        card = diamond_cards[0]  # Assuming only one diamond card is auctioned at a time
         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
-        card_rect = card_image.get_rect()
-        card_rect.topleft = (20, y_offset)
-        screen.blit(card_image, card_rect)
-        y_offset += 30
+        resized_card_image = pygame.transform.scale(card_image, (160, 240))
+        card_rect = resized_card_image.get_rect()
+        card_rect.centerx = screen_width // 2
+        card_rect.top = 100
+        screen.blit(resized_card_image, card_rect)
 
-    # Display user's hand
+    # Display user's hand horizontally from left to right, ensuring the left half is visible
     user_hand_text = font.render("Your Hand:", True, (255, 255, 255))
-    screen.blit(user_hand_text, (screen.get_width() // 2, 20))
-    x_offset = screen.get_width() // 2
-    y_offset = 50
+    screen.blit(user_hand_text, (20, screen_height - 100))
+    x_offset = 20
+    y_offset = screen_height - 300
     for card in user.hand:
         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
-        card_rect = card_image.get_rect()
+        # Resize the card image to desired dimensions (e.g., 80x120)
+        resized_card_image = pygame.transform.scale(card_image, (160, 240))
+        card_rect = resized_card_image.get_rect()
         card_rect.topleft = (x_offset, y_offset)
-        screen.blit(card_image, card_rect)
-        y_offset += 30
+        screen.blit(resized_card_image, card_rect)
+        x_offset += 90  # Adjust spacing between cards
+
+    # Display user's score on the top right of the pygame window
+    user_score_text = font.render(f"Your Score: {user.score}", True, (255, 255, 255))
+    screen.blit(user_score_text, (screen_width - user_score_text.get_width() - 20, 20))
+
+    # Buttons on the top left of the pygame window
+    start_button_text = font.render("Start", True, (255, 255, 255))
+    stop_button_text = font.render("Stop", True, (255, 255, 255))
+    quit_button_text = font.render("Quit", True, (255, 255, 255))
+    screen.blit(start_button_text, (20, 20))
+    screen.blit(stop_button_text, (20, 50))
+    screen.blit(quit_button_text, (20, 80))
 
     # Update the display
     pygame.display.flip()
 
-def check_end_game(diamond_cards, user, computer):
+
+def check_end_game(screen, diamond_cards, user, computer):
     if len(diamond_cards) == 0:
         # All diamond cards have been auctioned
         # Determine the winner based on total points accumulated by each player
         if user.score > computer.score:
-            print("Congratulations! You win!")
+            message = "Congratulations! You win!"
         elif user.score < computer.score:
-            print("Computer wins!")
+            message = "Computer wins!"
         else:
-            print("It's a tie!")
+            message = "It's a tie!"
+        
+        # Display the winning message in big font at the center of the screen
+        font = pygame.font.SysFont(None, 60)  # You can adjust the font size as needed
+        text = font.render(message, True, (255, 255, 255))  # White color text
+        text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
+        
+        # Clear the screen
+        screen.fill((0, 0, 0))
+        
+        # Display the winning message
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+        
         return True  # End the game
     else:
         return False  # Continue the game
+
 
 def get_user_bid(user):
     selected_card = None
@@ -242,18 +265,18 @@ def display_scores(user_score, computer_score):
     screen.blit(user_score_text, (20, 20))
     screen.blit(computer_score_text, (20, 50))
 
-# Display player hand
-def display_hand(player, x_offset):
-    font = pygame.font.SysFont(None, 30)
-    user_hand_text = font.render(f"{player.name}'s Hand:", True, (255, 255, 255))
-    screen.blit(user_hand_text, (x_offset, 20))
-    y_offset = 50
-    for card in player.hand:
-        card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
-        card_rect = card_image.get_rect()
-        card_rect.topleft = (x_offset, y_offset)
-        screen.blit(card_image, card_rect)
-        y_offset += 30
+# # Display player hand
+# def display_hand(player, x_offset):
+#     font = pygame.font.SysFont(None, 30)
+#     user_hand_text = font.render(f"{player.name}'s Hand:", True, (255, 255, 255))
+#     screen.blit(user_hand_text, (x_offset, 20))
+#     y_offset = 50
+#     for card in player.hand:
+#         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
+#         card_rect = card_image.get_rect()
+#         card_rect.topleft = (x_offset, y_offset)
+#         screen.blit(card_image, card_rect)
+#         y_offset += 30
 
 # Main game loop
 while True:
@@ -270,8 +293,9 @@ while True:
     display_scores(user.score, computer.score)
 
     # Display player hands
-    display_hand(user, 120)
-    display_hand(computer, 320)
+    # display_hand(user, 120)
+    # display_hand(computer, 320)
+    display_game_state(screen, user, computer, diamond_cards)
 
     # Update the display
     pygame.display.flip()
