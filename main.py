@@ -1,14 +1,15 @@
 import pygame
 import random
 import sys
-
+from pygame_gridcalculator import GridCalculator
 # Initialize Pygame
 pygame.init()
 
 # Set up the Pygame window
 screen_width = 1400  # Set your desired screen width
 screen_height = 750  # Set your desired screen height
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+grid = GridCalculator(screen.get_width(), screen.get_height(), 14, 7)
 pygame.display.set_caption("Game of Diamonds")  # Set the window title
 
 # Define font
@@ -118,36 +119,31 @@ def bid_phase(screen, user, computer, diamond_card):
     
     # User bids
     user_bid_text = font.render("Your turn to bid:", True, (255, 255, 255))
-    screen.blit(user_bid_text, (screen_width // 2, (screen_height // 2 )+ 100))
+    screen.blit(user_bid_text, (screen_width // 2, (screen_height // 2 ) - 5))
     pygame.display.flip()
 
     # Get user's bid index
     user_bid_index = get_user_bid(user)
     user_bid = user.hand.pop(user_bid_index)  # Remove the selected card from the user's hand
 
-    # Update the user's score
-    user.score += diamond_card.rank
 
     # Display the user's bid
     user_bid_display = font.render(f"You bid with: {user_bid.rank}", True, (255, 255, 255))
-    screen.blit(user_bid_display, (20, 50))
+    screen.blit(user_bid_display, (20, 100))
     pygame.display.flip()
 
     # Computer bids (assuming random bidding)
     computer_bid_text = font.render("Computer's turn to bid:", True, (255, 255, 255))
-    screen.blit(computer_bid_text, (20, 80))
+    screen.blit(computer_bid_text, (20, 130))
     pygame.display.flip()
 
     # Randomly select a card index from the computer's hand
     computer_bid_index = random.randint(0, len(computer.hand) - 1)
     computer_bid = computer.hand.pop(computer_bid_index)  # Remove the selected card from the computer's hand
 
-    # Update the computer's score
-    computer.score += diamond_card.rank
-
     # Display the computer's bid
     computer_bid_display = font.render(f"Computer bids with: {computer_bid.rank}", True, (255, 255, 255))
-    screen.blit(computer_bid_display, (20, 110))
+    screen.blit(computer_bid_display, (20, 160))
     pygame.display.flip()
 
     # Display the selected cards
@@ -211,10 +207,10 @@ def resolve_bids(user_bid, computer_bid, diamond_card):
     computer_score_text = font.render(f"Computer's score: {computer.score}", True, (255, 255, 255))
 
     # Blit the text onto the screen
-    screen.blit(winning_player_text, (20, 140))
-    screen.blit(points_distributed_text, (20, 170))
-    screen.blit(user_score_text, (20, 200))
-    screen.blit(computer_score_text, (20, 230))
+    screen.blit(winning_player_text, (20, 250))
+    screen.blit(points_distributed_text, (20, 280))
+    screen.blit(user_score_text, (20, 310))
+    screen.blit(computer_score_text, (20, 340))
 
     # Update the display
     pygame.display.flip()
@@ -240,26 +236,29 @@ def display_game_state(screen, user, computer, diamond_cards):
     screen.blit(user_hand_text, (20, screen_height - 100))
     x_offset = 20
     y_offset = screen_height - 300
+    card_width = 104  # Width of each card image
+    spacing = 0 # Spacing between cards
     for card in user.hand:
         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
         # Resize the card image to desired dimensions (e.g., 80x120)
-        resized_card_image = pygame.transform.scale(card_image, (160, 240))
+        resized_card_image = pygame.transform.scale(card_image, (100, 180))
         card_rect = resized_card_image.get_rect()
         card_rect.topleft = (x_offset, y_offset)
         screen.blit(resized_card_image, card_rect)
-        x_offset += 95  # Adjust spacing between cards
+        x_offset += card_width + spacing # Adjust spacing between cards
 
     # Display user's score on the top right of the pygame window
     user_score_text = font.render(f"Your Score: {user.score}", True, (255, 255, 255))
-    screen.blit(user_score_text, (screen_width - user_score_text.get_width() - 20, 20))
-
+    screen.blit(user_score_text, (screen_width - user_score_text.get_width() - 100, 20))
+    computer_score_text = font.render(f"Computer's Score: {computer.score}", True, (255, 255, 255))
+    screen.blit(computer_score_text, (screen_width - user_score_text.get_width() - 100, 50))
     # Buttons on the top left of the pygame window
     start_button_text = font.render("Start", True, (255, 255, 255))
     stop_button_text = font.render("Stop", True, (255, 255, 255))
     quit_button_text = font.render("Quit", True, (255, 255, 255))
     screen.blit(start_button_text, (20, 20))
-    screen.blit(stop_button_text, (20, 50))
-    screen.blit(quit_button_text, (20, 80))
+    screen.blit(stop_button_text, (90, 20))
+    screen.blit(quit_button_text, (160, 20))
 
     # Update the display
     pygame.display.flip()
@@ -314,13 +313,6 @@ def get_user_bid(user):
     return selected_card
 
 
-# Display player scores
-def display_scores(user_score, computer_score):
-    font = pygame.font.SysFont(None, 30)
-    user_score_text = font.render(f"User Score: {user_score}", True, (255, 255, 255))
-    computer_score_text = font.render(f"Computer Score: {computer_score}", True, (255, 255, 255))
-    screen.blit(user_score_text, (20, 20))
-    screen.blit(computer_score_text, (20, 50))
 
 # Main game loop
 def main():
@@ -343,9 +335,6 @@ def main():
 
         # Pause for a moment before proceeding to the next auction
         pygame.time.delay(5000)
-
-    # Display final scores
-    display_scores(user.score, computer.score)
 
     # Keep the window open until the user closes it
     while running:
