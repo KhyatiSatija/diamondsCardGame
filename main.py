@@ -24,10 +24,10 @@ card_image_paths = {
     '8 of Diamonds': 'PNG-cards-1.3/8_of_diamonds.png',
     '9 of Diamonds': 'PNG-cards-1.3/9_of_diamonds.png',
     '10 of Diamonds': 'PNG-cards-1.3/10_of_diamonds.png',
-    'Jack of Diamonds': 'PNG-cards-1.3/jack_of_diamonds.png',
-    'Queen of Diamonds': 'PNG-cards-1.3/queen_of_diamonds.png',
-    'King of Diamonds': 'PNG-cards-1.3/king_of_diamonds.png',
-    'Ace of Diamonds': 'PNG-cards-1.3/ace_of_diamonds.png',
+    '11 of Diamonds': 'PNG-cards-1.3/jack_of_diamonds.png',
+    '12 of Diamonds': 'PNG-cards-1.3/queen_of_diamonds.png',
+    '13 of Diamonds': 'PNG-cards-1.3/king_of_diamonds.png',
+    '14 of Diamonds': 'PNG-cards-1.3/ace_of_diamonds.png',
 
     '2 of Hearts': 'PNG-cards-1.3/2_of_hearts.png',
     '3 of Hearts': 'PNG-cards-1.3/3_of_hearts.png',
@@ -38,10 +38,10 @@ card_image_paths = {
     '8 of Hearts': 'PNG-cards-1.3/8_of_hearts.png',
     '9 of Hearts': 'PNG-cards-1.3/9_of_hearts.png',
     '10 of Hearts': 'PNG-cards-1.3/10_of_hearts.png',
-    'Jack of Hearts': 'PNG-cards-1.3/jack_of_hearts.png',
-    'Queen of Hearts': 'PNG-cards-1.3/queen_of_hearts.png',
-    'King of Hearts': 'PNG-cards-1.3/king_of_hearts.png',
-    'Ace of Hearts': 'PNG-cards-1.3/ace_of_hearts.png',
+    '11 of Hearts': 'PNG-cards-1.3/jack_of_hearts.png',
+    '12 of Hearts': 'PNG-cards-1.3/queen_of_hearts.png',
+    '13 of Hearts': 'PNG-cards-1.3/king_of_hearts.png',
+    '14 of Hearts': 'PNG-cards-1.3/ace_of_hearts.png',
 
     '2 of Spades': 'PNG-cards-1.3/2_of_spades.png',
     '3 of Spades': 'PNG-cards-1.3/3_of_spades.png',
@@ -52,10 +52,10 @@ card_image_paths = {
     '8 of Spades': 'PNG-cards-1.3/8_of_spades.png',
     '9 of Spades': 'PNG-cards-1.3/9_of_spades.png',
     '10 of Spades': 'PNG-cards-1.3/10_of_spades.png',
-    'Jack of Spades': 'PNG-cards-1.3/jack_of_spades.png',
-    'Queen of Spades': 'PNG-cards-1.3/queen_of_spades.png',
-    'King of Spades': 'PNG-cards-1.3/king_of_spades.png',
-    'Ace of Spades': 'PNG-cards-1.3/ace_of_spades.png',
+    '11 of Spades': 'PNG-cards-1.3/jack_of_spades.png',
+    '12 of Spades': 'PNG-cards-1.3/queen_of_spades.png',
+    '13 of Spades': 'PNG-cards-1.3/king_of_spades.png',
+    '14 of Spades': 'PNG-cards-1.3/ace_of_spades.png',
 
     '2 of Clubs': 'PNG-cards-1.3/2_of_clubs.png',
     '3 of Clubs': 'PNG-cards-1.3/3_of_clubs.png',
@@ -66,10 +66,10 @@ card_image_paths = {
     '8 of Clubs': 'PNG-cards-1.3/8_of_clubs.png',
     '9 of Clubs': 'PNG-cards-1.3/9_of_clubs.png',
     '10 of Clubs': 'PNG-cards-1.3/10_of_clubs.png',
-    'Jack of Clubs': 'PNG-cards-1.3/jack_of_clubs.png',
-    'Queen of Clubs': 'PNG-cards-1.3/queen_of_clubs.png',
-    'King of Clubs': 'PNG-cards-1.3/king_of_clubs.png',
-    'Ace of Clubs': 'PNG-cards-1.3/ace_of_clubs.png',
+    '11 of Clubs': 'PNG-cards-1.3/jack_of_clubs.png',
+    '12 of Clubs': 'PNG-cards-1.3/queen_of_clubs.png',
+    '13 of Clubs': 'PNG-cards-1.3/king_of_clubs.png',
+    '14 of Clubs': 'PNG-cards-1.3/ace_of_clubs.png',
 }
 
 class Card:
@@ -87,26 +87,21 @@ class Player:
 user = Player("User")
 computer = Player("Computer")
 
-# Initialize deck of cards (excluding diamonds)
-suits = ['Hearts', 'Clubs', 'Spades']
-ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-deck = [Card(rank, suit) for suit in suits for rank in ranks]
+# Initialize deck of cards
+def initialize_deck(suit):
+    ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    return [Card(rank, suit) for rank in ranks]
 
-# Shuffle the deck
-random.shuffle(deck)
+# Initialize decks for user and computer
+user.hand = initialize_deck('Hearts')
+computer.hand = initialize_deck('Spades')
 
 # Create a deck of diamond cards
-diamond_ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+diamond_ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 diamond_cards = [Card(rank, 'Diamonds') for rank in diamond_ranks]
 
 # Shuffle the diamond cards deck
 random.shuffle(diamond_cards)
-
-# Distribute cards to each player's hand
-num_initial_cards = 15  # Number of cards each player starts with
-for _ in range(num_initial_cards):
-    user.hand.append(deck.pop())
-    computer.hand.append(deck.pop())
 
 def display_diamond_cards(diamond_cards):
     for card in diamond_cards:
@@ -115,27 +110,78 @@ def display_diamond_cards(diamond_cards):
         card_rect.center = (screen_width // 2, screen_height // 2)  # Center the card on the screen
         screen.blit(card_image, card_rect)  # Draw the card on the screen
         pygame.display.flip()  # Update the display
-        pygame.time.delay(1000)  # Pause for 1 second before displaying the next card
+        # pygame.time.delay(4000)  # Pause for 1 second before displaying the next card
 
 def bid_phase(screen, user, computer, diamond_card):
+    # Clear the screen
+    screen.fill((0, 0, 0))
+    
     # User bids
-    print("User's turn to bid:")
-    print("Your hand:", [card.rank for card in user.hand])
-    user_bid_index = get_user_bid(user)  # Get user's bid index
+    user_bid_text = font.render("Your turn to bid:", True, (255, 255, 255))
+    screen.blit(user_bid_text, (screen_width // 2, (screen_height // 2 )+ 100))
+    pygame.display.flip()
+
+    # Get user's bid index
+    user_bid_index = get_user_bid(user)
     user_bid = user.hand.pop(user_bid_index)  # Remove the selected card from the user's hand
-    print("You bid with:", user_bid.rank)
-    # Update the user's score (assuming the card rank represents the points)
+
+    # Update the user's score
     user.score += diamond_card.rank
 
+    # Display the user's bid
+    user_bid_display = font.render(f"You bid with: {user_bid.rank}", True, (255, 255, 255))
+    screen.blit(user_bid_display, (20, 50))
+    pygame.display.flip()
+
     # Computer bids (assuming random bidding)
-    print("Computer's turn to bid:")
-    computer_bid_index = random.randint(0, len(computer.hand) - 1)  # Randomly select a card index from the computer's hand
+    computer_bid_text = font.render("Computer's turn to bid:", True, (255, 255, 255))
+    screen.blit(computer_bid_text, (20, 80))
+    pygame.display.flip()
+
+    # Randomly select a card index from the computer's hand
+    computer_bid_index = random.randint(0, len(computer.hand) - 1)
     computer_bid = computer.hand.pop(computer_bid_index)  # Remove the selected card from the computer's hand
-    print("Computer bids with:", computer_bid.rank)
-    # Update the computer's score (assuming the card rank represents the points)
+
+    # Update the computer's score
     computer.score += diamond_card.rank
 
+    # Display the computer's bid
+    computer_bid_display = font.render(f"Computer bids with: {computer_bid.rank}", True, (255, 255, 255))
+    screen.blit(computer_bid_display, (20, 110))
+    pygame.display.flip()
+
+    # Display the selected cards
+    display_selected_cards(screen, user_bid, computer_bid)
+
     return user_bid, computer_bid
+
+
+def display_selected_cards(screen, user_card, computer_card):
+    # Adjust the vertical offset for displaying the cards
+    vertical_offset = 200
+    # Adjust the horizontal offset for displaying the user's card
+    user_horizontal_offset = 200
+    # Adjust the horizontal offset for displaying the computer's card
+    computer_horizontal_offset = 250
+
+    # Display the user's selected card shifted to the left
+    user_selected_text = font.render("You chose:", True, (255, 255, 255))
+    screen.blit(user_selected_text, (screen_width - 250 - user_horizontal_offset, screen_height // 2 - 50 - vertical_offset))
+    display_card(user_card, screen_width - 250 - user_horizontal_offset, screen_height // 2 - vertical_offset)
+
+    # Display the computer's selected card shifted to the right
+    computer_selected_text = font.render("Computer chose:", True, (255, 255, 255))
+    screen.blit(computer_selected_text, (50 + computer_horizontal_offset, screen_height // 2 - 50 - vertical_offset))
+    display_card(computer_card, 50 + computer_horizontal_offset, screen_height // 2 - vertical_offset)
+
+
+
+def display_card(card, x, y):
+    card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
+    resized_card_image = pygame.transform.scale(card_image, (160, 240))
+    card_rect = resized_card_image.get_rect()
+    card_rect.topleft = (x, y)
+    screen.blit(resized_card_image, card_rect)   
 
 def resolve_bids(user_bid, computer_bid, diamond_card):
     # Determine the winning bid
@@ -158,15 +204,24 @@ def resolve_bids(user_bid, computer_bid, diamond_card):
         else:
             computer.score += diamond_card.rank
 
-    # Print the result of the bid resolution
-    print("Winner:", winning_player)
-    print("Points distributed:", diamond_card.rank)
-    print("User's score:", user.score)
-    print("Computer's score:", computer.score)
+    # Display the result of the bid resolution
+    winning_player_text = font.render(f"Winner: {winning_player}", True, (255, 255, 255))
+    points_distributed_text = font.render(f"Points distributed: {diamond_card.rank}", True, (255, 255, 255))
+    user_score_text = font.render(f"User's score: {user.score}", True, (255, 255, 255))
+    computer_score_text = font.render(f"Computer's score: {computer.score}", True, (255, 255, 255))
+
+    # Blit the text onto the screen
+    screen.blit(winning_player_text, (20, 140))
+    screen.blit(points_distributed_text, (20, 170))
+    screen.blit(user_score_text, (20, 200))
+    screen.blit(computer_score_text, (20, 230))
+
+    # Update the display
+    pygame.display.flip()
 
 def display_game_state(screen, user, computer, diamond_cards):
     # Clear the screen
-    screen.fill((0, 0, 0))
+    screen.fill((0, 0, 0)) #black color
 
     # Display diamond card at the top center of the screen
     diamond_card_text = font.render("Diamond Card:", True, (255, 255, 255))
@@ -192,7 +247,7 @@ def display_game_state(screen, user, computer, diamond_cards):
         card_rect = resized_card_image.get_rect()
         card_rect.topleft = (x_offset, y_offset)
         screen.blit(resized_card_image, card_rect)
-        x_offset += 90  # Adjust spacing between cards
+        x_offset += 95  # Adjust spacing between cards
 
     # Display user's score on the top right of the pygame window
     user_score_text = font.render(f"Your Score: {user.score}", True, (255, 255, 255))
@@ -249,13 +304,15 @@ def get_user_bid(user):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 # Check if the mouse click is on one of the user's cards
                 for i, card in enumerate(user.hand):
-                    card_rect = pygame.Rect((i * 120 + 20, 80), (100, 150))  # Assuming card dimensions are 100x150
+                    card_x = 20 + i * 95  # Calculate the x-coordinate of the card dynamically
+                    card_rect = pygame.Rect((card_x, screen_height - 300), (160, 240))  # Assuming card dimensions are 160x240
                     if card_rect.collidepoint(mouse_x, mouse_y):
                         selected_card = i
                         break
         # Draw the game state after each iteration to update the display
         display_game_state(screen, user, computer, diamond_cards)
     return selected_card
+
 
 # Display player scores
 def display_scores(user_score, computer_score):
@@ -265,37 +322,37 @@ def display_scores(user_score, computer_score):
     screen.blit(user_score_text, (20, 20))
     screen.blit(computer_score_text, (20, 50))
 
-# # Display player hand
-# def display_hand(player, x_offset):
-#     font = pygame.font.SysFont(None, 30)
-#     user_hand_text = font.render(f"{player.name}'s Hand:", True, (255, 255, 255))
-#     screen.blit(user_hand_text, (x_offset, 20))
-#     y_offset = 50
-#     for card in player.hand:
-#         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
-#         card_rect = card_image.get_rect()
-#         card_rect.topleft = (x_offset, y_offset)
-#         screen.blit(card_image, card_rect)
-#         y_offset += 30
-
 # Main game loop
-while True:
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+def main():
+    running = True
 
-    # Clear the screen
-    screen.fill((0, 128, 0))
+    # Auction diamond cards one by one
+    for diamond_card in diamond_cards:
+        # Display the diamond card being auctioned
+        display_diamond_cards([diamond_card])
 
-    # Display player scores
+        # Bid phase
+        user_bid, computer_bid = bid_phase(screen, user, computer, diamond_card)
+        
+        # Resolve bids and display result
+        resolve_bids(user_bid, computer_bid, diamond_card)
+
+        # Check if the game has ended
+        if check_end_game(screen, diamond_cards, user, computer):
+            break
+
+        # Pause for a moment before proceeding to the next auction
+        pygame.time.delay(5000)
+
+    # Display final scores
     display_scores(user.score, computer.score)
 
-    # Display player hands
-    # display_hand(user, 120)
-    # display_hand(computer, 320)
-    display_game_state(screen, user, computer, diamond_cards)
+    # Keep the window open until the user closes it
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-    # Update the display
-    pygame.display.flip()
+if __name__ == "__main__":
+    main()
