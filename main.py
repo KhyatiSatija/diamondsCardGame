@@ -1,7 +1,7 @@
 import pygame
 import random
 import sys
-from pygame_gridcalculator import GridCalculator
+# from pygame_gridcalculator import GridCalculator
 # Initialize Pygame
 pygame.init()
 
@@ -9,7 +9,6 @@ pygame.init()
 screen_width = 1400  # Set your desired screen width
 screen_height = 750  # Set your desired screen height
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-grid = GridCalculator(screen.get_width(), screen.get_height(), 14, 7)
 pygame.display.set_caption("Game of Diamonds")  # Set the window title
 
 # Define font
@@ -101,17 +100,13 @@ computer.hand = initialize_deck('Spades')
 diamond_ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 diamond_cards = [Card(rank, 'Diamonds') for rank in diamond_ranks]
 
-# Shuffle the diamond cards deck
-random.shuffle(diamond_cards)
-
 def display_diamond_cards(diamond_cards):
-    for card in diamond_cards:
-        card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
-        card_rect = card_image.get_rect()
-        card_rect.center = (screen_width // 2, screen_height // 2)  # Center the card on the screen
-        screen.blit(card_image, card_rect)  # Draw the card on the screen
-        pygame.display.flip()  # Update the display
-        # pygame.time.delay(4000)  # Pause for 1 second before displaying the next card
+    random_diamond_card = Card(random.randint(2, 14), 'Diamonds')
+    card_image = pygame.image.load(card_image_paths[f"{random_diamond_card.rank} of {random_diamond_card.suit}"])
+    card_rect = card_image.get_rect()
+    card_rect.center = (screen_width // 2, screen_height // 2)  # Center the card on the screen
+    screen.blit(card_image, card_rect)  # Draw the card on the screen
+    pygame.display.flip()  # Update the display
 
 def bid_phase(screen, user, computer, diamond_card):
     # Clear the screen
@@ -303,8 +298,8 @@ def get_user_bid(user):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 # Check if the mouse click is on one of the user's cards
                 for i, card in enumerate(user.hand):
-                    card_x = 20 + i * 95  # Calculate the x-coordinate of the card dynamically
-                    card_rect = pygame.Rect((card_x, screen_height - 300), (160, 240))  # Assuming card dimensions are 160x240
+                    card_x = 20 + i * 104  # Calculate the x-coordinate of the card dynamically
+                    card_rect = pygame.Rect((card_x, screen_height - 300), (100, 180))  # Assuming card dimensions are 160x240
                     if card_rect.collidepoint(mouse_x, mouse_y):
                         selected_card = i
                         break
@@ -334,7 +329,7 @@ def main():
             break
 
         # Pause for a moment before proceeding to the next auction
-        pygame.time.delay(5000)
+        pygame.time.delay(8000)
 
     # Keep the window open until the user closes it
     while running:
