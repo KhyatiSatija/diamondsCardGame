@@ -2,6 +2,9 @@ import pygame
 import random
 import sys
 import time
+import gameflow
+import interface
+import strategy
 pygame.init()
 
 screen_width = 1400 
@@ -160,10 +163,12 @@ def bid_phase(screen, user, computer, diamond_card):
     screen.blit(user_bid_display, (20, 100))
     pygame.display.flip()
 
-    # Computer bids (assuming random bidding)
+    # Computer bids
     computer_bid_text = font.render("Computer's turn to bid:", True, (255, 255, 255))
     screen.blit(computer_bid_text, (20, 130))
     pygame.display.flip()
+
+    # computer_bid = strategy.computer_bid(user, computer,diamond_card)  
 
     # Randomly select a card index from the computer's hand
     computer_bid_index = random.randint(0, len(computer.hand) - 1)
