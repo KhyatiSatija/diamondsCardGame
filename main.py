@@ -103,8 +103,8 @@ def display_game_screen(screen, user, computer, diamond_cards):
     screen.blit(user_hand_text, (20, screen_height - 100))
     x_offset = 20
     y_offset = screen_height - 300
-    card_width = 104  # Width of each card image
-    spacing = 0 # Spacing between cards
+    card_width = 100  # Width of each card image
+    spacing = 4 # Spacing between cards
     for card in user.hand:
         card_image = pygame.image.load(card_image_paths[f"{card.rank} of {card.suit}"])
         # Resize the card image to desired dimensions (e.g., 80x120)

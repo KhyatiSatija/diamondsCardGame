@@ -8,4 +8,4 @@ def computer_bid(user, computer, diamond_card):
     
     bid =  [card for card in computer.hand if card.rank == bid_rank][0]
     computer.hand.remove(bid)
-    return bid
+    return bid  
